@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import sisdis.sockets.ServidorDeChat;
 
 /**
@@ -15,40 +18,27 @@ import sisdis.sockets.ServidorDeChat;
  * envia a Data e Hora da máquina para o cliente; • Implemente um cliente para o
  * servidor
  */
-public class DataHora implements Runnable {
+public class DataHora {
 
     public static void main(String[] args) {
+            int port = 12345; // Porta do servidor
+
         try {
-            ServerSocket s = new ServerSocket(2222);
+            ServerSocket serverSocket = new ServerSocket(port);
+            System.out.println("Servidor esperando por conexões...");
+
             while (true) {
-                System.out.print("Esperando...");
-                Socket conexao = s.accept();
-                
-                System.out.println("Alguém se conectou");
-                // cria uma nova thread para tratar essa conexao
-                ServidorDeChat servC = new ServidorDeChat(conexao);
-                Thread t = new Thread(servC);
-                t.start();
-                // voltando ao loop, esperando mais alguem se conectar.
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Cliente conectado: " + clientSocket.getInetAddress().getHostAddress());
+
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                String dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                out.println(dateTime);
+
+                clientSocket.close();
+                System.out.println("Conexão encerrada com o cliente: " + clientSocket.getInetAddress().getHostAddress());
             }
         } catch (IOException e) {
-            System.out.println("IOException: " + e);
         }
-    }
-    
-    private Socket conexao;
-    public DataHora(Socket s) {
-        conexao = s;
-    }
-    
-    @Override
-    public void run() {
-        try {
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(conexao.getInputStream()));
-            PrintStream saida = new PrintStream(conexao.getOutputStream());
-        } catch (IOException ex) {
-            System.out.println("IOException: " + ex);
-        }
-            
     }
 }
