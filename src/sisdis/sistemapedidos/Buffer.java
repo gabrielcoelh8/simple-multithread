@@ -1,24 +1,26 @@
 package sisdis.sistemapedidos;
 
+//import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  *
  * @author gabrielcoelho
+ * Cozinha
  */
 public class Buffer {
-    private BlockingQueue<Integer> queue;
+    private BlockingQueue<Pedido> queue;
 
     public Buffer() {
-        this.queue = new LinkedBlockingQueue<>(10); // Capacidade máxima do buffer é 10
+        this.queue = new LinkedBlockingQueue<>(1); // Capacidade máxima do cozinheiro
     }
 
-    public void produzir(int item) throws InterruptedException {
+    public void produzir(Pedido item) throws InterruptedException {
         queue.put(item);
     }
 
-    public int consumir() throws InterruptedException {
+    public Pedido consumir() throws InterruptedException {
         return queue.take();
     }
 }
