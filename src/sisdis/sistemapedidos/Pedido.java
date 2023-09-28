@@ -1,14 +1,12 @@
 package sisdis.sistemapedidos;
 
-import java.util.Random;
-
 /**
  *
  * @author gabrielcoelho
  */
 public class Pedido {
     private String nome;
-    private int tempoPreparo;
+    private long tempoPreparo;
     private Categoria categoria;
     
     public enum Categoria {
@@ -17,12 +15,9 @@ public class Pedido {
         sobremesa
     };
 
-    public Pedido(String nome, Categoria categoria) {
-        Random rand = new Random();
-        int tempoAleatorio = rand.nextInt(3900) + 100; //0 - 4000
-        
+    public Pedido(String nome, long tempoPreparo, Categoria categoria) {        
         this.nome = nome;
-        this.tempoPreparo = tempoAleatorio;
+        this.tempoPreparo = tempoPreparo;
         this.categoria = categoria;
     }
 
@@ -34,7 +29,7 @@ public class Pedido {
         this.nome = nome;
     }
 
-    public int getTempoPreparo() {
+    public long getTempoPreparo() {
         return tempoPreparo;
     }
 

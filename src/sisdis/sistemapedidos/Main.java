@@ -1,6 +1,9 @@
 package sisdis.sistemapedidos;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 import sisdis.sistemapedidos.Pedido.Categoria;
 
 /**
@@ -52,18 +55,22 @@ trabalhando simultaneamente.
 
  */
 public class Main {
-    public static void main(String[] args) {
-        Buffer cozinheiro = new Buffer();
-        ArrayList<Cliente> clientes = new ArrayList<>();
-        
-        Cliente cliente = new Cliente(1);  //id
-        cliente.addPedido(new Pedido("Arroz", Categoria.entrada));
-        clientes.add(cliente);
-        
-        Thread produtorThread = new Thread(new Produtor(cozinheiro, clientes));
-        Thread consumidorThread = new Thread(new Consumidor(cozinheiro, cliente));
+    public static void main(String[] args) throws InterruptedException {
+        Queue<Pedido> filaPedidos = new LinkedList<>();
+        Random rand = new Random();
 
-        produtorThread.start();
-        consumidorThread.start();
+        int numClientes = rand.nextInt(31) + 20; // Entre 20 e 50 clientes
+        int numCozinheiros = rand.nextInt(6) + 5; // Entre 5 e 10 cozinheiros
+
+        for (int i = 0; i < numClientes; i++) {
+            Thread clienteThread = new Thread(new Cliente(filaPedidos, "Cliente " + i));
+            clienteThread.start();
+        }
+
+        for (int i = 0; i < numCozinheiros; i++) {
+            Thread cozinheiroThread = new Thread(new Cozinheiro(filaPedidos));
+            cozinheiroThread.start();
+        }
+        
     }
 }
