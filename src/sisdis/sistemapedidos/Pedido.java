@@ -5,30 +5,31 @@ package sisdis.sistemapedidos;
  * @author gabrielcoelho
  */
 public class Pedido {
-    private String nome;
+
+    private Cliente cliente;
     private long tempoPreparo;
     private Categoria categoria;
-    
+
     public enum Categoria {
         entrada,
-        prato_principal, 
+        prato_principal,
         sobremesa
     };
 
-    public Pedido(String nome, long tempoPreparo, Categoria categoria) {        
-        this.nome = nome;
+    public Pedido(Cliente cliente, long tempoPreparo, Categoria categoria) {
+        this.cliente = cliente;
         this.tempoPreparo = tempoPreparo;
         this.categoria = categoria;
     }
 
-    public String getNome() {
-        return nome;
+    public String getClienteNome() {
+        return cliente.getNome();
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void addPedidoPronto(Pedido pedidoPronto) {
+        cliente.addPedidoPronto(pedidoPronto);
     }
-
+    
     public long getTempoPreparo() {
         return tempoPreparo;
     }
@@ -44,6 +45,5 @@ public class Pedido {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
-    
-    
+
 }

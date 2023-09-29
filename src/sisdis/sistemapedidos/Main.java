@@ -1,76 +1,79 @@
 package sisdis.sistemapedidos;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
-import sisdis.sistemapedidos.Pedido.Categoria;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * 
-REQUISITOS FUNCIONAIS
-* 
-
-1. Pedidos de Clientes: Os clientes podem fazer pedidos de diferentes itens do
-cardápio (pelo menos 10 itens disponíveis para escolha, a qual pode ser aleatória).
-Os pedidos devem conter, pelo menos, os atributos:
-a) nome;
-b) tempo de preparo (valor aleatório de 100 a 4000 milissegundos)
-c) categoria: [entrada, prato principal, sobremesa].
-Cada cliente fará 3 pedidos, uma entrada, um prato principal e uma sobremesa.
-Um cliente só pode realizar um pedido por vez.
-
-2. Fila de Pedidos: Os pedidos dos clientes são colocados em uma fila de pedidos
-pendentes, onde serão aguardados para serem processados.
-
-3. Preparação na Cozinha: A equipe da cozinha atua como o consumidor, retirando
-os pedidos da fila e preparando os itens solicitados.
-
-4. Notificações aos Clientes: Os clientes devem ser notificados quando seus pedidos
-estiverem prontos para serem servidos. Semelhante ao tempo para produção, o
-cliente leva um tempo aleatório para consumir o pedido, o qual não deve ser inferior a
-100 nem superior a 5000 milissegundos.
-
-5. Número de clientes: Seu programa deve gerar um número aleatório, variando de
-20 a 50, cada cliente deve ser representado por uma thread.
-
-6. Número de cozinheiros: Seu programa deve gerar um número aleatório, variando
-de 5 a 10, cada cozinheiro deve ser representado por uma thread.
-
-*
-REQUISITOS TÉCNICOS
-*
-
-1. Utilize o conceito de produtor-consumidor para gerenciar a fila de pedidos entre os
-clientes e a equipe da cozinha.
-
-2. Implemente sincronização adequada para garantir que os pedidos sejam
-manipulados de forma segura por várias threads.
-
-3. Crie um mecanismo de notificação para informar os clientes quando seus pedidos
-estiverem prontos.
-
-4. O sistema deve ser capaz de lidar com múltiplos pedidos e vários cozinheiros
-trabalhando simultaneamente.
-
+ *
+ * REQUISITOS FUNCIONAIS
+ *
+ *
+ * 1. Pedidos de Clientes: Os clientes podem fazer pedidos de diferentes itens
+ * do cardápio (pelo menos 10 itens disponíveis para escolha, a qual pode ser
+ * aleatória). Os pedidos devem conter, pelo menos, os atributos: a) nome; b)
+ * tempo de preparo (valor aleatório de 100 a 4000 milissegundos) c) categoria:
+ * [entrada, prato principal, sobremesa]. Cada cliente fará 3 pedidos, uma
+ * entrada, um prato principal e uma sobremesa. Um cliente só pode realizar um
+ * pedido por vez.
+ *
+ * 2. Fila de Pedidos: Os pedidos dos clientes são colocados em uma fila de
+ * pedidos pendentes, onde serão aguardados para serem processados.
+ *
+ * 3. Preparação na Cozinha: A equipe da cozinha atua como o consumidor,
+ * retirando os pedidos da fila e preparando os itens solicitados.
+ *
+ * 4. Notificações aos Clientes: Os clientes devem ser notificados quando seus
+ * pedidos estiverem prontos para serem servidos. Semelhante ao tempo para
+ * produção, o cliente leva um tempo aleatório para consumir o pedido, o qual
+ * não deve ser inferior a 100 nem superior a 5000 milissegundos.
+ *
+ * 5. Número de clientes: Seu programa deve gerar um número aleatório, variando
+ * de 20 a 50, cada cliente deve ser representado por uma thread.
+ *
+ * 6. Número de cozinheiros: Seu programa deve gerar um número aleatório,
+ * variando de 5 a 10, cada cozinheiro deve ser representado por uma thread.
+ *
+ *
+ * REQUISITOS TÉCNICOS
+ *
+ *
+ * 1. Utilize o conceito de produtor-consumidor para gerenciar a fila de pedidos
+ * entre os clientes e a equipe da cozinha.
+ *
+ * 2. Implemente sincronização adequada para garantir que os pedidos sejam
+ * manipulados de forma segura por várias threads.
+ *
+ * 3. Crie um mecanismo de notificação para informar os clientes quando seus
+ * pedidos estiverem prontos.
+ *
+ * 4. O sistema deve ser capaz de lidar com múltiplos pedidos e vários
+ * cozinheiros trabalhando simultaneamente.
+ *
  */
 public class Main {
+
     public static void main(String[] args) throws InterruptedException {
-        Queue<Pedido> filaPedidos = new LinkedList<>();
+        //Creating BlockingQueue of size 10
+        BlockingQueue<Pedido> filaPedidos = new LinkedBlockingQueue<>();
+
+        System.out.println("Producer and Consumer has been started");
+
         Random rand = new Random();
 
-        int numClientes = rand.nextInt(31) + 20; // Entre 20 e 50 clientes
-        int numCozinheiros = rand.nextInt(6) + 5; // Entre 5 e 10 cozinheiros
+        int numClientes = rand.nextInt(30) + 20; // Entre 20 e 50 clientes
+        int numCozinheiros = rand.nextInt(5) + 5; // Entre 5 e 10 cozinheiros
 
         for (int i = 0; i < numClientes; i++) {
-            Thread clienteThread = new Thread(new Cliente(filaPedidos, "Cliente " + i));
-            clienteThread.start();
-        }
-
-        for (int i = 0; i < numCozinheiros; i++) {
-            Thread cozinheiroThread = new Thread(new Cozinheiro(filaPedidos));
-            cozinheiroThread.start();
+            Cliente cliente = new Cliente(filaPedidos, ("Cliente " + (i + 1)));
+            new Thread(cliente).start();
         }
         
+        for (int i = 0; i < numCozinheiros; i++) {
+            Cozinheiro cozinheiro = new Cozinheiro(i, filaPedidos);
+            new Thread(cozinheiro).start();
+            //System.out.println(filaPedidos.poll());
+        }
+
     }
 }

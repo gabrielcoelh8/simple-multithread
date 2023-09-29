@@ -1,46 +1,46 @@
 package sisdis.sistemapedidos;
 
-import java.util.Queue;
-import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+//import java.util.Random;
 
 /**
  *
  * @author gabrielcoelho
  */
 public class Cozinheiro implements Runnable {
+    private long id;
+    private BlockingQueue<Pedido> filaPedidos;
 
-    private final Queue<Pedido> filaPedidos;
-
-    public Cozinheiro(Queue<Pedido> filaPedidos) {
+    public Cozinheiro(long id, BlockingQueue<Pedido> filaPedidos) {
+        this.id = id;
         this.filaPedidos = filaPedidos;
     }
 
     @Override
     public void run() {
-        Random rand = new Random();
-        while (true) {
-            synchronized (filaPedidos) {
-                
-                while (filaPedidos.isEmpty()) {
-                    try {
-                        filaPedidos.wait(); // Espera por pedidos na fila
-                    } catch (InterruptedException e) {
-                    }
-                }
-                
-                Pedido pedido = filaPedidos.poll();
-                System.out.println("Cozinheiro está preparando o pedideo de " + pedido.getCategoria() + " para " + pedido.getNome());
+        //Random rand = new Random();
+        try {
+            Pedido pedido;
+            // consuming messages until exit message is received
+            while ((pedido = filaPedidos.take()) != null) {
+                System.out.println("Cozinheiro "+ id +" está preparando o pedido: " + pedido.getCategoria() + 
+                        "\nCliente: "+ pedido.getClienteNome() + 
+                        ".\nTempo de espera: "+pedido.getTempoPreparo());
 
                 // Simula o consumo do pedido pelo cliente
-                try {
-                    Thread.sleep(rand.nextInt(4900) + 100); // Entre 100 e 5000 milissegundos
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Thread.sleep(pedido.getTempoPreparo()); // Entre 100 e 5000 milissegundos
 
                 // Notifica o cliente que o pedido está pronto
-                System.out.println("Pedido de " + pedido.getCategoria() + " para " + pedido.getNome() + " está pronto!");
+                pedido.addPedidoPronto(pedido);
+                System.out.println("Pedido: " + pedido.getCategoria() + " para " + pedido.getClienteNome() + " está pronto!");
+                
+                if (filaPedidos.isEmpty()) {
+                    break;
+                }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
     }
 }
