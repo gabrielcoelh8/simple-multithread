@@ -39,7 +39,6 @@ public class Cozinheiro implements Runnable {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
     }

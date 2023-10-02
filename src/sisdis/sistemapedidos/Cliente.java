@@ -42,7 +42,6 @@ public class Cliente implements Runnable {
                 try {
                     filaPedidos.put(pedido);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
                 System.out.println(nome + " fez um pedido de " + categoria);
             }
@@ -52,9 +51,8 @@ public class Cliente implements Runnable {
                     pedidosProntos.take();
                     long tempoConsumo = rand.nextInt(4900) + 100; // Entre 100 e 5000 milissegundos
                     Thread.sleep(tempoConsumo);
-                    System.out.println(nome + " consumiu o pedido de " + categoria + " por " + tempoConsumo +"mm!");
+                    System.out.println(nome + " consumiu o pedido de " + categoria + " por " + tempoConsumo +"ms!");
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
                 
             }

@@ -1,5 +1,8 @@
 package sisdis.sistemapedidos;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author gabrielcoelho
@@ -27,7 +30,11 @@ public class Pedido {
     }
 
     public void addPedidoPronto(Pedido pedidoPronto) {
-        cliente.addPedidoPronto(pedidoPronto);
+        try {
+            cliente.addPedidoPronto(pedidoPronto);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Pedido.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public long getTempoPreparo() {
