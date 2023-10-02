@@ -1,6 +1,5 @@
 package sisdis.sistemapedidos;
 
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -32,7 +31,6 @@ public class Cliente implements Runnable {
     @Override
     public void run() {
         Random rand = new Random();
-        // String[] categorias = {"entrada", "prato principal", "sobremesa"};
 
         for (Pedido.Categoria categoria : Pedido.Categoria.values()) {
             long tempoPreparo = rand.nextInt(3900) + 100; // Entre 100 e 4000 milissegundos

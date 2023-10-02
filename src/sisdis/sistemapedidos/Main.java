@@ -54,7 +54,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        //Creating BlockingQueue of size 10
         BlockingQueue<Pedido> filaPedidos = new LinkedBlockingQueue<>();
 
         System.out.println("Producer and Consumer has been started");
@@ -72,7 +71,6 @@ public class Main {
         for (int i = 0; i < numCozinheiros; i++) {
             Cozinheiro cozinheiro = new Cozinheiro(i, filaPedidos);
             new Thread(cozinheiro).start();
-            //System.out.println(filaPedidos.poll());
         }
 
     }

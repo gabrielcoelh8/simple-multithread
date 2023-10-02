@@ -18,7 +18,6 @@ public class Cozinheiro implements Runnable {
 
     @Override
     public void run() {
-        //Random rand = new Random();
         try {
             Pedido pedido;
             // consuming messages until exit message is received
