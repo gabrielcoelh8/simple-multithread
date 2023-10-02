@@ -27,7 +27,7 @@ public class Cozinheiro implements Runnable {
                         "\nCliente: "+ pedido.getClienteNome() + 
                         ".\nTempo de espera: "+pedido.getTempoPreparo());
 
-                // Simula o consumo do pedido pelo cliente
+                // Simula o tempo de preparo do pedido
                 Thread.sleep(pedido.getTempoPreparo()); // Entre 100 e 5000 milissegundos
 
                 // Notifica o cliente que o pedido está pronto
